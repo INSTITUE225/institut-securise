@@ -11,3 +11,69 @@
     <p>Vous avez accédé à une zone restreinte.</p>
 </body>
 </html>
+import express from 'express';
+import path from 'path';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Définir une URL privée (ex: un token secret)
+const PRIVATE_URL = '/institut-access-98765';
+
+// Servir les fichiers statiques (CSS, images, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Servir le fichier HTML uniquement via l'URL privée
+app.get(PRIVATE_URL, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Bloquer tout autre accès direct
+app.use((req, res) => {
+    res.status(403).send('Accès interdit - INSTITUT CLASSIFIÉ');
+});
+
+app.listen(PORT, () => {
+    console.log(`Serveur en ligne sur le port ${PORT}. URL privée: http://localhost:${PORT}${PRIVATE_URL}`);
+});
+
+// Ajout du code pour le Dashboard avec Tracklist et logo
+app.get('/dashboard', (req, res) => {
+    res.send(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard - Institut</title>
+        <link rel="stylesheet" href="/public/style.css">
+    </head>
+    <body>
+        <header>
+            <img src="/public/logo.png" alt="Logo de l'Institut" class="logo">
+            <h1>Dashboard - Institut</h1>
+        </header>
+        <main>
+            <section class="tracklist">
+                <h2>Tracklist</h2>
+                <div class="track">
+                    <h3>Morceau 1</h3>
+                    <p>Description du morceau 1</p>
+                </div>
+                <div class="track">
+                    <h3>Morceau 2</h3>
+                    <p>Description du morceau 2</p>
+                </div>
+                <div class="track">
+                    <h3>Morceau 3</h3>
+                    <p>Description du morceau 3</p>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>© 2025 Institut. Tous droits réservés.</p>
+        </footer>
+    </body>
+    </html>
+    `);
+});
