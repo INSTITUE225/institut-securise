@@ -1,2 +1,2 @@
-app.use('/logo.png', express.static(path.join(__dirname, 'assets/logo.png')));
+
 
